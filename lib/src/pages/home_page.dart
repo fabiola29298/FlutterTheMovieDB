@@ -12,6 +12,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    peliculasProvider.getPopulares();
+
      
     return Scaffold(
       appBar: AppBar(
@@ -72,12 +74,16 @@ class HomePage extends StatelessWidget {
         SizedBox(height: 5.0,),
         
         
-        FutureBuilder(
-          future: peliculasProvider.getPopulares(), 
-          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+        StreamBuilder(
+          stream: peliculasProvider.popularesStream,
 
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            
             if (snapshot.hasData){
-              return CardSwiperHorizontal(peliculas: snapshot.data) ;
+              return CardSwiperHorizontal(
+                peliculas: snapshot.data,
+                siguientePagina: peliculasProvider.getPopulares,
+                ) ;
             }
             else{
               return Center(child: CircularProgressIndicator());
